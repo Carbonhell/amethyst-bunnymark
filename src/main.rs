@@ -13,7 +13,7 @@ use bunnymark::{BunnyMark, BunnyMarkBundle};
 
 fn main() -> Result<(), amethyst::Error> {
     // logger disabled because we don't want it to affect the benchmark
-    amethyst::start_logger(Default::default());
+    //amethyst::start_logger(Default::default());
 
     let display_config_path = format!(
         "{}/resources/display_config.ron",

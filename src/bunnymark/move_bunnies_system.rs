@@ -3,20 +3,17 @@ use bunnymark::BunnyResource;
 use amethyst::{
 	core::{Time, Transform},
 	ecs::prelude::{Join, Read, System, WriteStorage},
-	utils::fps_counter::FpsCounter,
 };
 use bunnymark::Bunny;
 use rand::random;
 
 const GRAVITY: f32 = 500.0;
 
-pub struct MoveBunniesSystem {
-	elapsed: f32,
-}
+pub struct MoveBunniesSystem {}
 
 impl MoveBunniesSystem {
 	pub fn new() -> MoveBunniesSystem {
-		MoveBunniesSystem { elapsed: 0.0 }
+		MoveBunniesSystem {}
 	}
 }
 
@@ -25,16 +22,10 @@ impl<'s> System<'s> for MoveBunniesSystem {
 		WriteStorage<'s, Bunny>,
 		WriteStorage<'s, Transform>,
 		Read<'s, Time>,
-		Read<'s, FpsCounter>,
 		ReadExpect<'s, BunnyResource>,
 	);
 
-	fn run(&mut self, (mut bunnies, mut transforms, time, fps_counter, bunny_resource): Self::SystemData) {
-		self.elapsed += time.delta_seconds();
-		if self.elapsed > 2.0 {
-			println!("{}", fps_counter.sampled_fps());
-			self.elapsed = 0.0;
-		}
+	fn run(&mut self, (mut bunnies, mut transforms, time, bunny_resource): Self::SystemData) {
 
 		for (bunny, transform) in (&mut bunnies, &mut transforms).join() {
 			let translation = transform.translation();

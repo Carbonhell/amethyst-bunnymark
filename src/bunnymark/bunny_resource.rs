@@ -1,5 +1,5 @@
 use amethyst::{
-    assets::{AssetStorage, Handle, Loader},
+    assets::{AssetStorage, Loader},
     core::math::Vector2,
     ecs::World,
     renderer::{SpriteSheet, Texture, ImageFormat, SpriteSheetFormat, SpriteRender},

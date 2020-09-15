@@ -5,6 +5,7 @@ use amethyst::{
         Entities, ReadExpect, WriteStorage,
     },
     renderer::{Sprite, SpriteRender, sprite::TextureCoordinates},
+    utils::fps_counter::FpsCounter,
 };
 use bunnymark::{BunnyResource, Bunny};
 use rand::random;
@@ -84,6 +85,7 @@ impl<'s> System<'s> for SpawnBunniesSystem {
         WriteStorage<'s, SpriteRender>,
         ReadExpect<'s, BunnyResource>,
         Read<'s, Time>,
+        Read<'s, FpsCounter>,
     );
 
     fn run(&mut self, data: Self::SystemData) {
@@ -94,6 +96,7 @@ impl<'s> System<'s> for SpawnBunniesSystem {
             mut sprite_renders,
             bunny_resources,
             time,
+            fps_counter,
         ) = data;
 
         self.elapsed += time.delta_seconds();
@@ -113,7 +116,7 @@ impl<'s> System<'s> for SpawnBunniesSystem {
         }
 
         if self.print_elapsed > 2.0 {
-            println!("{}", self.count);
+            println!("{},{}", self.count, fps_counter.sampled_fps());
             self.print_elapsed = 0.0;
         }
     }
