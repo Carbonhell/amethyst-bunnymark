@@ -4,5 +4,11 @@ version = "0.1.0"
 authors = []
 
 [dependencies]
-amethyst = "0.9"
+amethyst = "0.15.0"
 rand = "0.5"
+
+[features]
+default = ["vulkan"]
+empty = ["amethyst/empty"]
+metal = ["amethyst/metal"]
+vulkan = ["amethyst/vulkan"]

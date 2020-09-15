@@ -1,10 +1,10 @@
 use amethyst::{
-    core::{cgmath::Vector3, GlobalTransform, Time, Transform},
+    core::{math::Vector3, Transform, Time},
     ecs::{
         prelude::{Read, System},
         Entities, ReadExpect, WriteStorage,
     },
-    renderer::{Sprite, SpriteRender, TextureCoordinates},
+    renderer::{Sprite, SpriteRender, sprite::TextureCoordinates},
 };
 use bunnymark::{BunnyResource, Bunny};
 use rand::random;
@@ -44,23 +44,17 @@ impl SpawnBunniesSystem {
         entities: &Entities<'s>,
         bunnies: &mut WriteStorage<'s, Bunny>,
         transforms: &mut WriteStorage<'s, Transform>,
-        global_transforms: &mut WriteStorage<'s, GlobalTransform>,
         sprite_renders: &mut WriteStorage<'s, SpriteRender>,
         bunny_resource: &ReadExpect<'s, BunnyResource>,
     ) {
         let mut transform = Transform::default();
-        transform.translation = Vector3::new(
+        transform.set_translation(Vector3::new(
             bunny_resource.bounds.x / 2.0 - bunny_resource.sprite_size.x / 2.0,
             bunny_resource.bounds.y / 2.0 - bunny_resource.sprite_size.y / 2.0,
             0.0,
-        );
+        ));
 
-        let sprite_render = SpriteRender {
-            sprite_sheet: bunny_resource.sprite_sheet.clone(),
-            sprite_number: 0,
-            flip_horizontal: false,
-            flip_vertical: false,
-        };
+        let sprite_render = bunny_resource.sprite_render.clone();
 
         entities
             .build_entity()
@@ -76,7 +70,6 @@ impl SpawnBunniesSystem {
                 bunnies,
             )
             .with(transform, transforms)
-            .with(GlobalTransform::default(), global_transforms)
             .build();
 
         self.count += 1;
@@ -88,7 +81,6 @@ impl<'s> System<'s> for SpawnBunniesSystem {
         Entities<'s>,
         WriteStorage<'s, Bunny>,
         WriteStorage<'s, Transform>,
-        WriteStorage<'s, GlobalTransform>,
         WriteStorage<'s, SpriteRender>,
         ReadExpect<'s, BunnyResource>,
         Read<'s, Time>,
@@ -99,7 +91,6 @@ impl<'s> System<'s> for SpawnBunniesSystem {
             entities,
             mut bunnies,
             mut transforms,
-            mut global_transforms,
             mut sprite_renders,
             bunny_resources,
             time,
@@ -114,7 +105,6 @@ impl<'s> System<'s> for SpawnBunniesSystem {
                     &entities,
                     &mut bunnies,
                     &mut transforms,
-                    &mut global_transforms,
                     &mut sprite_renders,
                     &bunny_resources,
                 );

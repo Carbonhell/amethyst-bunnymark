@@ -1,5 +1,5 @@
 use amethyst::{
-    core::cgmath::Vector3,
+    core::math::Vector3,
     ecs::{Component, DenseVecStorage},
 };
 

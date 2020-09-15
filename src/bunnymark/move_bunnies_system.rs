@@ -3,7 +3,7 @@ use bunnymark::BunnyResource;
 use amethyst::{
 	core::{Time, Transform},
 	ecs::prelude::{Join, Read, System, WriteStorage},
-	utils::fps_counter::FPSCounter,
+	utils::fps_counter::FpsCounter,
 };
 use bunnymark::Bunny;
 use rand::random;
@@ -25,7 +25,7 @@ impl<'s> System<'s> for MoveBunniesSystem {
 		WriteStorage<'s, Bunny>,
 		WriteStorage<'s, Transform>,
 		Read<'s, Time>,
-		Read<'s, FPSCounter>,
+		Read<'s, FpsCounter>,
 		ReadExpect<'s, BunnyResource>,
 	);
 
@@ -37,8 +37,8 @@ impl<'s> System<'s> for MoveBunniesSystem {
 		}
 
 		for (bunny, transform) in (&mut bunnies, &mut transforms).join() {
-			let translation = transform.translation;
-			let mut new_translation = transform.translation;
+			let translation = transform.translation();
+			let mut new_translation = transform.translation().clone();
 			bunny.velocity.y += GRAVITY * time.delta_seconds();
 
 			if translation.x > bunny_resource.bounds.x {
@@ -59,11 +59,11 @@ impl<'s> System<'s> for MoveBunniesSystem {
 			}
 
 			if translation.y < 0.0 {
-				new_translation.y = 0.0;
+				new_translation[1] = 0.0;
 				bunny.velocity[1] = 0.0;
 			}
 
-			transform.translation = new_translation + bunny.velocity * time.delta_seconds();
+			transform.set_translation(new_translation + bunny.velocity * time.delta_seconds());
 		}
 	}
 }
