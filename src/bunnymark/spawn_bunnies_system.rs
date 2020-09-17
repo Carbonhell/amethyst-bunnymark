@@ -9,6 +9,9 @@ use amethyst::{
 };
 use bunnymark::{BunnyResource, Bunny};
 use rand::random;
+use std::fs::File;
+use std::io::Write;
+use std::process::exit;
 
 const SPAWN_WAIT_TIME_IN_SECONDS: f32 = 0.5;
 const BUNNIES_TO_SPAWN: i32 = 100;
@@ -18,6 +21,7 @@ pub struct SpawnBunniesSystem {
     pub print_elapsed: f32,
     pub count: usize,
     pub sprite: Sprite,
+    file: File,
 }
 
 impl SpawnBunniesSystem {
@@ -37,6 +41,7 @@ impl SpawnBunniesSystem {
                     bottom: 0.0,
                 },
             },
+            file: File::create("output.txt").unwrap(),
         }
     }
 
@@ -116,7 +121,9 @@ impl<'s> System<'s> for SpawnBunniesSystem {
         }
 
         if self.print_elapsed > 2.0 {
-            println!("{},{}", self.count, fps_counter.sampled_fps());
+            let fps = fps_counter.sampled_fps();
+            self.file.write_all(format!("{},{}\n", self.count, fps).as_bytes()).unwrap();
+            if fps < 20.0 {exit(0);}
             self.print_elapsed = 0.0;
         }
     }
